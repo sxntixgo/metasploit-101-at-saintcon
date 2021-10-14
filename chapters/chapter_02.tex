@@ -1,0 +1,238 @@
+\chapter{Metasploit Modules}
+
+\section{The Structure of a Module}
+
+Metasploit and its modules are written in Ruby. Specifically, the modules follow the same basic structure:
+
+\begin{enumerate}
+    \item Class type selection, which uses the keyword \texttt{class}
+    \item Rank, which expresses how effective the module is and uses the keyword \texttt{rank} 
+    \item Imports, which uses the keyword \texttt{import}
+    \item Info definition, which uses the keywords \texttt{def initialize(info = \{\})} and which includes a dictionary with the following keys: 
+    \begin{itemize}
+        \item \texttt{Name}
+        \item \texttt{Description}
+        \item \texttt{Author}
+        \item \texttt{License}
+        \item \texttt{Platform}
+        \item \texttt{Target}
+    \end{itemize}
+    \item Run definition, which uses the keywords \texttt{def run}
+\end{enumerate}
+
+For example, the following listing shows that structure: 
+
+\begin{listingbox}
+    \lstinputlisting[language=ruby]{chapters/code/msf_module_structure.rb}
+\end{listingbox}
+
+\section{Analyzing A Module}
+
+In this section, we will analyze the module used for vsFTP 2.3.4. The vulnerability associated with this exploit is a backdoor that provides unauthenticated root shell access at port 6200 after the characters \texttt{:)} are appended to any username.
+
+The module is located at:
+
+\begin{itemize}
+    \item Online: \url{https://github.com/rapid7/metasploit-framework/tree/master/modules/exploits/unix/ftp/vsftpd_234_backdoor.rb}
+    \item Kali Linux: \path{/usr/share/metasploit-framework/modules/exploits/unix/ftp/vsftpd\_234\_backdoor.rb}
+\end{itemize}
+
+Let's check the different parts of this module. The line 6 defines the type of module. In our previous example the class was an auxiliary module, here it is an exploit.
+
+\begin{listingbox}
+    \lstinputlisting[firstline=6,lastline=6,firstnumber=6,language=ruby]{chapters/code/vsftpd_234_backdoor.rb}
+\end{listingbox}
+
+Line 7 defines the rank of the module. These value can be \texttt{ExcellentRanking}, \texttt{GreatRanking}, \texttt{GoodRanking}, \texttt{NormalRanking}, \texttt{AverageRanking}, \texttt{LowRanking}, \texttt{ManualRanking}\footnote{\url{https://github.com/rapid7/metasploit-framework/wiki/Exploit-Ranking}}.
+
+\begin{listingbox}
+    \lstinputlisting[firstline=7,lastline=7,firstnumber=7,language=ruby]{chapters/code/vsftpd_234_backdoor.rb}
+\end{listingbox}
+
+Line 9 includes Metasploit's module TCP. This includes was not part of the general module structure. A list of all the available Metasploit's modules can be found at:
+
+\begin{itemize}
+    \item Online: \url{https://github.com/rapid7/metasploit-framework/tree/master/lib/msf/core}
+    \item Kali Linux: \path{/usr/share/metasploit-framework/lib/msf/core}
+\end{itemize}
+
+\begin{listingbox}
+    \lstinputlisting[firstline=9,lastline=9,firstnumber=9,language=ruby]{chapters/code/vsftpd_234_backdoor.rb}
+\end{listingbox}
+
+Lines 11 to 47 define the bolierplate information about the module. Compared to our basic structure, there are a new dictionary keys: \texttt{References}, \texttt{Privileged}, \texttt{Platform}, \texttt{Arch}, \texttt{Payload}, \texttt{Targets}, \texttt{DisclosureDate}, and \texttt{DefaultTarget}.
+
+\begin{listingbox}
+    \lstinputlisting[firstline=11,lastline=47,firstnumber=11,language=ruby]{chapters/code/vsftpd_234_backdoor.rb}
+\end{listingbox}
+
+Line 49 defines the default value for RPORT.
+
+\begin{listingbox}
+    \lstinputlisting[firstline=49,lastline=49,firstnumber=49,language=ruby]{chapters/code/vsftpd_234_backdoor.rb}
+\end{listingbox}
+
+Lines 52 to 95 defines the exploit. Line 52 starts the definition of the exploit. 
+
+\begin{listingbox}
+    \lstinputlisting[firstline=52,lastline=52,firstnumber=52,language=ruby]{chapters/code/vsftpd_234_backdoor.rb}
+\end{listingbox}
+
+Lines 54 to 59 test if port 6200 at the target is already in use. If that's true, then aborts the exploit.
+
+\begin{listingbox}
+    \lstinputlisting[firstline=54,lastline=59,firstnumber=54,language=ruby]{chapters/code/vsftpd_234_backdoor.rb}
+\end{listingbox}
+
+Lines 61 to 65 connect to the FTP server and gets its banner.
+
+\begin{listingbox}
+    \lstinputlisting[firstline=61,lastline=65,firstnumber=61,language=ruby]{chapters/code/vsftpd_234_backdoor.rb}
+\end{listingbox}
+
+Line 67 sends a random text as username with \texttt{:)} appended. 
+
+\begin{listingbox}
+    \lstinputlisting[firstline=67,lastline=67,firstnumber=67,language=ruby]{chapters/code/vsftpd_234_backdoor.rb}
+\end{listingbox}
+
+Lines 68 and 69 get the server response and prints it on screen. 
+
+\begin{listingbox}
+    \lstinputlisting[firstline=68,lastline=69,firstnumber=68,language=ruby]{chapters/code/vsftpd_234_backdoor.rb}
+\end{listingbox}
+
+Lines 71 to 81 check for the response from the server after the username is supplied. If the response is 530 or different than 331, the exploits disconnects and exits.
+
+\begin{listingbox}
+    \lstinputlisting[firstline=71,lastline=81,firstnumber=71,language=ruby]{chapters/code/vsftpd_234_backdoor.rb}
+\end{listingbox}
+
+Line 83 sends a random text as the password.
+
+\begin{listingbox}
+    \lstinputlisting[firstline=83,lastline=83,firstnumber=83,language=ruby]{chapters/code/vsftpd_234_backdoor.rb}
+\end{listingbox}
+
+Lines 86 to 91 connect to port 6200 and call the function \texttt{handle\_backdoor}.
+
+\begin{listingbox}
+    \lstinputlisting[firstline=86,lastline=91,firstnumber=86,language=ruby]{chapters/code/vsftpd_234_backdoor.rb}
+\end{listingbox}
+
+Lines 97 to 112 define the function \texttt{handle\_backdoor}. Lines 99 to 108 request the id of the username at the target, and check its result to determine if there is a shell connection.
+
+\begin{listingbox}
+    \lstinputlisting[firstline=97,lastline=112,firstnumber=97,language=ruby]{chapters/code/vsftpd_234_backdoor.rb}
+\end{listingbox}
+
+Finally, lines 110 to 111 send the payload and then send the connection to the handler.
+
+\begin{listingbox}
+    \lstinputlisting[firstline=110,lastline=111,firstnumber=110,language=ruby]{chapters/code/vsftpd_234_backdoor.rb}
+\end{listingbox}
+
+\section{Developing a Module}
+
+In this section we will first define a methodology to create a module and then we will create a module based on the module \texttt{distcc\_exec}, which can be found at: 
+
+\begin{itemize}
+    \item Online: \url{https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/unix/misc/distcc\_exec.rb}
+    \item Kali Linux: \path{/usr/share/metasploit-framework/modules/exploits/unix/misc/distcc_exec.rb}
+\end{itemize}
+
+\subsection{Methodology for Developing a Module}
+
+We already covered the different components that a basic module must have. We will use that information in our methodology: 
+
+\begin{enumerate}
+    \item Open a blank text file
+    \item Add the following sections
+    \begin{enumerate}
+        \item Class
+        \item Include
+        \item Initialize the module information
+        \item Define the exploit (or run)
+    \end{enumerate}
+    \item Save the module in the appropriate directory within Metasploit.
+    \item Restart Metasploit (or start it)
+\end{enumerate}
+
+After these steps the module should be ready to be configured and to be run.
+
+\subsection{Example of Developing a Module}
+
+We will create a module with the following sections: 
+
+\begin{enumerate}
+    \item Class: \texttt{class MetasploitModule < Msf::Exploit::Remote}
+    \item Include \texttt{include Msf::Exploit::Remote::Tcp}
+    \item Information: 
+    \begin{itemize}
+        \item Name: \texttt{'DistCC RCE - SAINTCON'}
+        \item Description: \texttt{\%q\{This was used to show how to create a module\}}
+        \item Author: \texttt{ [ 'SGO' ] }
+        \item License: \texttt{MSF-LICENSE}
+        \item Platform: \texttt{ [ 'unix' ]}
+        \item Targets: \texttt{[ [ 'Automatic', \{ \} ] ]}
+    \end{itemize}
+    \item Exploit and helping functions:
+    \begin{listingbox}
+        \lstinputlisting[language=ruby]{chapters/code/distcc_exec.rb}
+    \end{listingbox}
+\end{enumerate}
+
+\begin{warnbox}
+    The previous exploit and helping functions are very rudimentary and do not handle errors. Please see the original exploit to learn about error and output handling.
+\end{warnbox}
+
+Then, we will save the module at \path{/usr/share/metasploit-framework/modules/exploits/unix/misc/distcc_exec_saintcon.rb}. We will restart Metasploit and execute the following commands in Metasploit: 
+
+\begin{enumerate}
+    \item \mycli{msf5 > use exploit/unix/misc/distcc\_exec\_saintcon}
+    \item \mycli{msf5 > set payload cmd/unix/bind\_perl}
+    \item \mycli{msf5 > show options}
+    \item \mycli{msf5 > set RHOST 10.0.2.4}
+    \item \mycli{msf5 > set RPORT 3632}
+    \item \mycli{msf5 > run}
+\end{enumerate}
+
+\section{Exercise: Built a Module}
+
+The following exercise is based on the module \texttt{unreal\_ircd\_3281\_backdoor} that can be found at:
+
+\begin{itemize}
+    \item Online: \url{https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/unix/irc/unreal\_ircd\_3281\_backdoor.rb}
+    \item Kali LInux: \path{/usr/share/metasploit-framework/modules/exploits/unix/irc/unreal_ircd_3281_backdoor.rb}
+\end{itemize}
+
+This modules exploits a backdoor in the application Unreal IRCD 3.2.8.1, witch runs at TCP port \texttt{6667} in Metasploitable 2.
+
+\subsection{Exercise}
+
+Develop a Metasploit module following the methodology presented in the previous section, with the following properties:
+
+\begin{enumerate}
+    \item The class of the module is \texttt{class MetasploitModule < Msf::Exploit::Remote}
+    \item The module includes \texttt{Msf::Exploit::Remote::Tcp}
+    \item The description has the following properties: 
+        \begin{itemize}
+            \item Name: \texttt{'UnrealIRC backdoor - SAINTCON'}
+            \item Description: \texttt{\%q\{This module was created as an exercise for Metasploit 101 at SAINTCON\}}
+            \item Author: \texttt{'<Your name>'}
+            \item License: \texttt{MSF-LICENSE}
+            \item Platform: \texttt{ [ 'unix' ]}
+            \item Targets: \texttt{[ [ 'Automatic', \{ \} ] ]}
+        \end{itemize}
+    \item The exploit is: 
+        \begin{listingbox}
+            \lstinputlisting[language=ruby]{chapters/code/unrealirc_exploit.rb}
+        \end{listingbox}
+    \item Extra point: Add a Rank to the module
+\end{enumerate}
+
+\begin{warnbox}[frametitle=Warning: Saving the module]
+    Before you save the module, make sure you chose a name other than the name of a module that already exists.
+\end{warnbox}
+
+Once the module is create, make sure you save it in the appropriate directory in Metasploit. Then, restart Metasploit. Before running the module, make sure you select the right remote host and port. Also, for better result use the payload \texttt{cmd/unix/bind\_perl}.

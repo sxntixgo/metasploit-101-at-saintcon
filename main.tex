@@ -1,0 +1,75 @@
+\documentclass{book}
+
+% \usepackage[top=0.5in, bottom=0.5in, left=0.5in, right=0.5in]{geometry}
+% \usepackage{showframe}
+\usepackage[hidelinks]{hyperref}
+\usepackage{listings}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{textcomp}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage[T1]{fontenc}
+
+\setlength\parindent{0pt}
+\setlength{\parskip}{1em}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+ 
+\lstdefinestyle{mystyle}{  
+    commentstyle=\color{ForestGreen},
+    keywordstyle=\color{Magenta},
+    numberstyle=\tiny\color{Gray},
+    stringstyle=\color{RoyalPurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\newcommand{\mycli}[1]{\indent\texttt{#1}}
+
+\newmdenv[frametitlebackgroundcolor=SkyBlue,frametitlerule=true,frametitlefont=\small\bfseries,font=\small,linecolor=SkyBlue,frametitle=Info,roundcorner=3pt,skipabove=1em]{infobox}
+
+\newmdenv[frametitlebackgroundcolor=YellowGreen,frametitlerule=true,frametitlefont=\small\bfseries,font=\small,linecolor=YellowGreen,frametitle=Tip,roundcorner=3pt,skipabove=1em]{tipbox}
+
+\newmdenv[frametitlebackgroundcolor=RedOrange,frametitlerule=true,frametitlefont=\small\bfseries,font=\small,linecolor=RedOrange,frametitle=Warning,roundcorner=3pt,skipabove=1em]{warnbox}
+
+\newmdenv[linecolor=Black,roundcorner=3pt,innerleftmargin=14pt, innerbottommargin=-6pt,skipbelow=-3pt]{listingbox}
+
+\title{Metasploit 101\\ at SAINTCON}
+\author{Santiago Gimenez Ocano}
+\date{08-22-2021}
+
+\begin{document}
+\begin{titlepage}
+\maketitle
+\end{titlepage}
+\thispagestyle{empty}
+
+
+\frontmatter
+\tableofcontents
+
+
+\input{chapters/chapter_00.tex}
+\mainmatter
+\input{chapters/chapter_01.tex}
+\input{chapters/chapter_02.tex}
+% \input{chapters/chapter_03.tex}
+% \input{bibliography.tex}
+
+\bibliography{bibliography}
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliographystyle{ieeetr}
+
+\end{document}

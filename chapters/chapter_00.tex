@@ -1,0 +1,118 @@
+\chapter{Preface}
+
+\section*{Disclaimer} 
+This document is only for education purposes. Before scanning a network or exploiting vulnerabilities, \textit{always} ask for permission.
+
+\section*{References}
+
+This document used the following main references: 
+\begin{description}
+    \item[Chapter 1] ``Metasploit: The Penetration Tester's Guide''\cite{metasploit-penetration} and ``Metasploit Unleashed''\cite{metasploit-unleashed}.
+    \item[Chapter 2] ``Mastering Metasploit: Take your penetration testing and IT security skills to a whole new level with the secrets of Metasploit, 3rd Edition''\cite{mastering-metasploit} and Metasploit's source code in GitHub\cite{metasploit-github}.
+\end{description}
+
+\section*{Setup} 
+
+The examples and exercises in this document were developed using following software:
+
+\begin{itemize}
+    \item VirtualBox 6.1.26\cite{virtualbox-site}
+    \item Kali Linux 2021.03\cite{kali-site}
+    \item Metasploit Framework 6.1.4-dev\cite{metasploit-site}
+    \item Metasploitable 2\cite{metasploitable-site}
+\end{itemize}
+
+However, older and newer version of that software might also work.
+
+\subsection*{Installing the VMs}
+
+After downloading and installing Virtual Box\footnote{\url{https://www.virtualbox.org/wiki/Downloads}} in your host system, download Kali Linux for Virtual Box\footnote{\url{https://www.kali.org//get-kali/\#kali-virtual-machines}} and download Metasploitable 2\footnote{\url{https://sourceforge.net/projects/metasploitable/}}. For Kali Linux, you should have an OVA file; for Metasploitable, you will have a Zip file, decompress the Zip file and make sure you have a VMDK file.
+
+\subsubsection*{Installing Kali Linux}
+
+To install Kali Linux, follow these steps:
+
+\begin{enumerate}
+    \item Open Virtual Box
+    \item From the top menu, select ``File'' and click on ``Import Appliance...''
+    \item In the new window, select the location of the OVF file that contains the Kali Linux VM, and click on ``Next''.
+    \item Review all the appliance settings and click on ``Import''.
+\end{enumerate}
+
+\subsubsection*{Installing Metasploitable}
+
+Metasploitable 2 can be installed following these steps:
+
+\begin{enumerate}
+    \item Open Virtual Box
+    \item From the top menu, select ``Machine'' and click on ``New...''
+    \item Follow the steps to create a new Machine, use the following settings (leave the rest of the parameters in their default values): 
+    \begin{itemize}
+        \item Name: ``Metasploitable 2''
+        \item Type: ``Linux''
+        \item Version: ``Ubuntu (64-bits)''
+        \item Memory Size: ``256 MB''
+        \item Hard Disk: ``Use an existing virtual hard disk file'', and click on the folder icon, a new window will open. In the new window, select ``Add'' and select the Metasploitable 2 VMDK file. 
+    \end{itemize} 
+\end{enumerate}
+
+\subsubsection*{Network Setup}
+
+Before starting the network setup, make sure that the Kali and Metasploitable VMs are powered off. First, we will need to create a NAT network in VirtualBox with these steps: 
+
+\begin{enumerate}
+    \item In the main window in Virtual Box, select ``File'' and click on ``Preferences''.
+    \item Select Network and click on the icon to add a new NAT Network.
+\end{enumerate}
+
+Then, for each of the VMs, follow these steps:
+
+\begin{enumerate}
+    \item Select the VM, and click on the Network Properties
+    \item Select Adapter 1, Attached to ``NAT Network'', and select the NAT network you just created.
+\end{enumerate}
+
+You can verify connectivity between both machines with these steps:
+
+\begin{enumerate}
+    \item Log in Metasploitable 2 with the username \texttt{msfadmin} and the password \texttt{mfsadmin} 
+    \item Get the VM IP address with \texttt{ifconfig | grep 10.0.2}. Take note of this IP address
+    \item Log in Kali Linux with the username \texttt{kali} and the password \texttt{kali}
+    \item Open a browser and type the IP address of your Metasploitable 2 VM
+\end{enumerate}
+
+\section*{Conventions}
+
+This document uses different font variations and boxes to highlight information. Here's the convention used.
+
+\begin{itemize}
+    \item[] \texttt{typewritter} font is used for URLs and computer commands and files.
+    \item[] \textit{italic} font is used for emphasis. 
+\end{itemize}
+
+\begin{infobox}
+    This is an info box. It provides additional information.
+\end{infobox}
+
+\begin{tipbox}
+    This is a tip box. It provides useful tricks, shortcuts, or commands.
+\end{tipbox}
+
+\begin{warnbox}
+    This is a warning box. It alerts on possible common mistakes.
+\end{warnbox}
+
+\begin{listingbox}
+\begin{lstlisting}[language=ruby]
+# This is source code
+puts "Hello world"
+\end{lstlisting}    
+\end{listingbox}
+
+\section*{Contact}
+
+For questions about this document or its corresponding presentation, please send an email to \href{mailto:santiago.gimenezocano@utahsaint.org}{\texttt{santiago.gimenezocano@utahsaint.org}}.
+
+\subsection*{GitHub}
+
+This document has been generated in \LaTeX. Its source files, as well as its corresponding presentation slides, can be found at \url{https://github.com/sxntixgo/metasploit-101-at-saintcon}.

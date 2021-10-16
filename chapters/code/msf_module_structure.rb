@@ -5,10 +5,12 @@ class MetasploitModule < Msf::Auxiliary
 
     def initialize(info = {})
         super(update_info(info, 
-            'Name'          => 'Module Name',
-            'Description'   => %q{Module Description}
-            'Author'        => ['Name']
-            'License'       => MSF_LICENSE
+            'Name'          => '<MODULE_NAME>',
+            'Description'   => %q{<MODULE_DESCRIPTION>},
+            'Author'        => ['<AUTHOR_NAME>'],
+            'License'       => MSF_LICENSE,
+            'Platform'      => ['PLATFORM'],
+            'Targets'       => ['TARGETS']
         ))
     end
     def run

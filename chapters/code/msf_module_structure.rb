@@ -10,7 +10,7 @@ class MetasploitModule < Msf::Auxiliary
             'Author'        => ['<AUTHOR_NAME>'],
             'License'       => MSF_LICENSE,
             'Platform'      => ['PLATFORM'],
-            'Targets'       => ['TARGETS']
+            'Targets'       => [<TARGETS>]
         ))
     end
     def run

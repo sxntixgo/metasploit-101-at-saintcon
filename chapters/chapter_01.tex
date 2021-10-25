@@ -26,7 +26,7 @@ Before we proceed, we need to define the following terms used in pentests and Me
     \item[Listener] a piece of software that waits for incoming connections.
 \end{description}
 
-\section{Metasploit Framewok}
+\section{Metasploit Framework}
 
 Metasploit is a framework that aims to automate many of the repetitive tasks in the previous steps. Specifically, Metasploit is mostly used in the analysis of vulnerabilities, and in the exploitation and post exploitation of vulnerabilities. In other words, Metasploit is used to validate the existence of vulnerabilities by exploiting them. The goal is to identify these vulnerabilities before somebody else does it.
 
@@ -142,7 +142,7 @@ Additionally, we can use \texttt{nmap} within Metasploit, for example:
 \mycli{msf5 > nmap -p- 10.0.2.4}
 
 \begin{infobox}[frametitle=Info: Speed Comparison]
-    This is a simple comparison of Nmap, Masscan, and Metasploit while scanning the first 100 TCP ports of \texttt{scanmen.nmap.org}:
+    This is a simple comparison of Nmap, Masscan, and Metasploit while scanning the first 100 TCP ports of \texttt{scanme.nmap.org}:
     \begin{itemize}
         \item Nmap: 1.45 seconds
         \item Masscan: 2 seconds
@@ -210,7 +210,7 @@ Metasploit helps us to take advantage of vulnerabilities with different exploita
 
 \mycli{msf5 > show exploits}
 
-In the exploitation phase is where \texttt{msf5 > search} becomes helpful, as we can search for any string such as service name, service achronym, CVE, MS security bulletin, or fancy vulnerability name (like bluekeep, eternalblue, or proxylogon).
+In the exploitation phase is where \texttt{msf5 > search} becomes helpful, as we can search for any string such as service name, service acronym, CVE, MS security bulletin, or fancy vulnerability name (like bluekeep, eternalblue, or proxylogon).
 
 After finding the right exploit module, the steps to use the module are the same we used for any other module, with the exception that before running the module we might need to check different configurations to decide on the IP of the target, ports, the type of target, and the payload. For example:
 
@@ -306,7 +306,7 @@ Once we obtained a session, we can execute some of the local exploits suggested 
         The exploit \texttt{glibc\_ld\_audit\_dso\_load\_priv\_esc} is configured by default to run a meterpreter reverse tcp but for x64 architecture.
     \end{warnbox}    
 
-    \item \texttt{msf5 > set payload linux/x86/meterpreter/reverse\_tcp}
+    \item\texttt{msf5 > set payload linux/x86/meterpreter/reverse\_tcp}
     \item\texttt{msf5 > run}
 \end{itemize}
 
